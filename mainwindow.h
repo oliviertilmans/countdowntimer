@@ -49,6 +49,7 @@ public slots:
     void goFS();
     void leaveFS();
     void toggleTimer();
+    void restartTimer();
 
 protected:
     void mouseReleaseEvent(QMouseEvent *e);

@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->time, SIGNAL(timeChanged(QTime)), this, SLOT(setTargetDuration()));
     connect(ui->fsButton, SIGNAL(clicked()), this, SLOT(goFS()));
     connect(ui->timerBtn, SIGNAL(clicked()), this, SLOT(toggleTimer()));
-    connect(lcdNumber, SIGNAL(timeout()), this, SLOT(toggleTimer()));
+    connect(lcdNumber, SIGNAL(timeout()), this, SLOT(restartTimer()));
 }
 
 MainWindow::~MainWindow()
@@ -91,8 +91,13 @@ void MainWindow::toggleTimer()
         lcdNumber->stopTimer();
         ui->timerBtn->setText("Start countdown");
     } else {
-        setTargetDuration();
         lcdNumber->startTimer();
         ui->timerBtn->setText("Stop countdown");
     }
+}
+
+void MainWindow::restartTimer()
+{
+    ui->timerBtn->setText("Restart countdown");
+    setTargetDuration();
 }
