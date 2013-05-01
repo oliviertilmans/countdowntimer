@@ -1,13 +1,20 @@
 #include "countdownwidget.h"
 
+#define BLINKCOUNT 11
+#define BLINKDELAY 250
+
 CountdownWidget::CountdownWidget(
         QWidget *parent,
         QDateTime targetDate,
-        int rFreq) :
+        int rFreq,
+        bool animateEnd) :
     QLCDNumber(parent),
     endDate(targetDate),
     refreshRate(rFreq),
-    timer()
+    timer(),
+    animatedEnd(animateEnd),
+    blinkCount(0),
+    endTimer()
 {
     delay.start();
     this->setAutoFillBackground(true);
@@ -23,7 +30,9 @@ CountdownWidget::CountdownWidget(
     this->setPalette(palette);
     // Setup timer
     timer.setSingleShot(false);
+    endTimer.setSingleShot(false);
     connect(&timer, SIGNAL(timeout()), this, SLOT(refresh()));
+    connect(&endTimer, SIGNAL(timeout()), this, SLOT(endBlink()));
     this->refresh();
 }
 
@@ -59,9 +68,14 @@ void CountdownWidget::refresh()
 {
     QDateTime now = QDateTime::currentDateTime();
     if (now > endDate) {
-        this->display("00:00:00.000");
         stopTimer();
-        emit timeout();
+        this->display("0.000");
+        if (animatedEnd) {
+            endTimer.start(BLINKDELAY);
+        }
+        else {
+            emit timeout();
+        }
         return;
     }
     // Extract the timestamp
@@ -77,7 +91,7 @@ void CountdownWidget::refresh()
         int length = 3 + 3 + 2 + 2 + qMax(h/10, 2);
         this->setDigitCount(length);
         this->display(QString("%1:%2:%3.%4")
-                      .arg(QString::number(h),2,'0')
+                      .arg(QString::number(h),1,'0')
                       .arg(QString::number(m),2,'0')
                       .arg(QString::number(s),2,'0')
                       .arg(QString::number(ms),3,'0'));
@@ -85,14 +99,14 @@ void CountdownWidget::refresh()
         int length = 3 + 3 + 2 + 2;
         this->setDigitCount(length);
         this->display(QString("%1:%2.%3")
-                      .arg(QString::number(m),2,'0')
+                      .arg(QString::number(m))
                       .arg(QString::number(s),2,'0')
                       .arg(QString::number(ms),3,'0'));
     } else {
         int length = 3 + 3 + 2;
         this->setDigitCount(length);
         this->display(QString("%1.%2")
-                      .arg(QString::number(s),2,'0')
+                      .arg(QString::number(s))
                       .arg(QString::number(ms),3,'0'));
     }
 }
@@ -100,4 +114,17 @@ void CountdownWidget::refresh()
 bool CountdownWidget::isActive()
 {
     return timer.isActive();
+}
+
+void CountdownWidget::endBlink()
+{
+    if (blinkCount - BLINKCOUNT) {
+        if (!(blinkCount % 2)) this->display("");
+        else this->display("0.000");
+        ++blinkCount;
+    } else {
+        blinkCount = 0;
+        endTimer.stop();
+        emit timeout();
+    }
 }

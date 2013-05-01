@@ -13,7 +13,8 @@ public:
     explicit CountdownWidget(
             QWidget *parent = 0,
             QDateTime target=QDateTime::currentDateTime().addSecs(3600),
-            int refreshR=83);
+            int refreshR=83,
+            bool animateEnd=true);
     // Return true if the countdown is active (decreasing)
     bool isActive();
 
@@ -35,12 +36,16 @@ public slots:
 
 private slots:
     void refresh();
+    void endBlink();
 
 private:
     QDateTime endDate;
     int refreshRate;
     QTimer timer;
     QTime delay; // To deal with stop/resume
+    bool animatedEnd;
+    int blinkCount;
+    QTimer endTimer;
 };
 
 #endif // COUNTDOWNWIDGET_H
