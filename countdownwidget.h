@@ -33,7 +33,7 @@ public slots:
     void setTargetDateTime(QDateTime);
     // Set up the frequency at which the countdown will be updated (in msec)
     void updateRefreshRate(int);
-    // Schedule the countdown duration to the given time (! QTime is always < 24h)
+    // Schedule the countdown duration to the given time (! QTime is always < 24h); will ignore msec
     void scheduleLength(QTime);
 
 private slots:
