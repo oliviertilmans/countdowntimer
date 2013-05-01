@@ -52,7 +52,10 @@ public slots:
     void restartTimer();
 
 protected:
+    // If the user click while in fullscreen, exit the fullscreen mode
     void mouseReleaseEvent(QMouseEvent *e);
+    // If the user press space, toggle the timer;
+    // If the user press any other key, exit fullscreen if in fullscreen mode
     void keyReleaseEvent(QKeyEvent *e);
 
 private:

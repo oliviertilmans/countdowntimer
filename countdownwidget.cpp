@@ -70,12 +70,8 @@ void CountdownWidget::refresh()
     if (now > endDate) {
         stopTimer();
         this->display("0.000");
-        if (animatedEnd) {
-            endTimer.start(BLINKDELAY);
-        }
-        else {
-            emit timeout();
-        }
+        if (animatedEnd)  endTimer.start(BLINKDELAY);
+        else              emit timeout();
         return;
     }
     // Extract the timestamp
