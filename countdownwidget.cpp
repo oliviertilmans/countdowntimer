@@ -20,7 +20,6 @@ CountdownWidget::CountdownWidget(
     QBrush blackBrush(QColor(0, 0, 0, 255));
     blackBrush.setStyle(Qt::SolidPattern);
     palette.setBrush(QPalette::Active, QPalette::Window, blackBrush);
-    //palette.setBrush(QPalette::Active, QPalette::Window, blackBrush);
     this->setPalette(palette);
     // Setup timer
     timer.setSingleShot(false);
