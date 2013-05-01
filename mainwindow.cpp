@@ -91,6 +91,7 @@ void MainWindow::toggleTimer()
         lcdNumber->stopTimer();
         ui->timerBtn->setText("Start countdown");
     } else {
+        setTargetDuration();
         lcdNumber->startTimer();
         ui->timerBtn->setText("Stop countdown");
     }

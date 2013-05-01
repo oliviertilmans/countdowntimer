@@ -41,6 +41,7 @@ void CountdownWidget::stopTimer()
 
 void CountdownWidget::setTargetDateTime(QDateTime d)
 {
+    delay.start();
     endDate = d;
     refresh();
 }
