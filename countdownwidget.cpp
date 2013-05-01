@@ -73,13 +73,28 @@ void CountdownWidget::refresh()
     int m = left%60;
     int h = left/60;
     // Compute the timestamp length
-    int length = 3+3+2+2+ qMax(h/10, 2);
-    this->setDigitCount(length);
-    this->display(QString("%1:%2:%3.%4")
-                  .arg(QString::number(h),2,'0')
-                  .arg(QString::number(m),2,'0')
-                  .arg(QString::number(s),2,'0')
-                  .arg(QString::number(ms),3,'0'));
+    if (h > 0) {
+        int length = 3 + 3 + 2 + 2 + qMax(h/10, 2);
+        this->setDigitCount(length);
+        this->display(QString("%1:%2:%3.%4")
+                      .arg(QString::number(h),2,'0')
+                      .arg(QString::number(m),2,'0')
+                      .arg(QString::number(s),2,'0')
+                      .arg(QString::number(ms),3,'0'));
+    } else if (m > 0) {
+        int length = 3 + 3 + 2 + 2;
+        this->setDigitCount(length);
+        this->display(QString("%1:%2.%3")
+                      .arg(QString::number(m),2,'0')
+                      .arg(QString::number(s),2,'0')
+                      .arg(QString::number(ms),3,'0'));
+    } else {
+        int length = 3 + 3 + 2;
+        this->setDigitCount(length);
+        this->display(QString("%1.%2")
+                      .arg(QString::number(s),2,'0')
+                      .arg(QString::number(ms),3,'0'));
+    }
 }
 
 bool CountdownWidget::isActive()
