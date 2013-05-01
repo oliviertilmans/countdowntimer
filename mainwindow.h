@@ -23,13 +23,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTimer>
-#include <QTime>
 #include <QDateTime>
 
 namespace Ui {
 class mainWindow;
 }
+
+class CountdownWidget;
 
 QT_BEGIN_NAMESPACE
 class QMouseEvent;
@@ -45,12 +45,9 @@ public:
     ~MainWindow();
 
 public slots:
-    void updateCountdown();
     void setTargetDuration();
     void goFS();
     void leaveFS();
-    void startTimer();
-    void stopTimer();
     void toggleTimer();
 
 protected:
@@ -59,10 +56,7 @@ protected:
 
 private:
     Ui::mainWindow *ui;
-    QTimer timer;
-    QTime timeLeft; // What to display
-    QTime increment; // How long since the last timer update
-    QDateTime endDate; // When should we stop ?
+    CountdownWidget *lcdNumber;
     bool fs;
 };
 

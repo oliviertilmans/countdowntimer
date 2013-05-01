@@ -20,6 +20,7 @@
  **/
 
 #include "mainwindow.h"
+#include "countdownwidget.h"
 #include "ui_mainwindow.h"
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -27,43 +28,30 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::mainWindow),
-    timer(new QTimer(this)),
-    timeLeft(QTime(1,0)),
+    lcdNumber(new CountdownWidget(this)),
     fs(false)
 {
     ui->setupUi(this);
-    ui->time->setTime(timeLeft);
-    setTargetDuration();
-    timer.setSingleShot(false);
-    connect(&timer, SIGNAL(timeout()), this, SLOT(updateCountdown()));
+    ui->centralWidget->layout()->addWidget(lcdNumber);
+    ui->time->setTime(QTime(1,0));
     connect(ui->time, SIGNAL(timeChanged(QTime)), this, SLOT(setTargetDuration()));
     connect(ui->fsButton, SIGNAL(clicked()), this, SLOT(goFS()));
     connect(ui->timerBtn, SIGNAL(clicked()), this, SLOT(toggleTimer()));
+    connect(lcdNumber, SIGNAL(timeout()), this, SLOT(toggleTimer()));
 }
 
 MainWindow::~MainWindow()
 {
-    timer.stop();
     delete ui;
-}
-
-void MainWindow::updateCountdown()
-{
-    if (QDateTime::currentDateTime() > endDate) return stopTimer();
-    if (timer.isActive()) {
-        timeLeft = timeLeft.addMSecs(-increment.elapsed());
-        increment.restart();
-    }
-    ui->lcdNumber->display(timeLeft.toString("HH:mm:ss.zzz"));
 }
 
 void MainWindow::setTargetDuration()
 {
-    timeLeft = ui->time->time();
-    endDate = QDateTime::currentDateTime().addSecs(timeLeft.second()
+    QTime timeLeft = ui->time->time();
+    QDateTime endDate = QDateTime::currentDateTime().addSecs(timeLeft.second()
                                                    + timeLeft.minute()*60
                                                    + timeLeft.hour()*3600);
-    updateCountdown();
+    lcdNumber->setTargetDateTime(endDate);
 }
 
 void MainWindow::goFS()
@@ -97,25 +85,13 @@ void MainWindow::keyReleaseEvent(QKeyEvent *e)
     } else QMainWindow::keyReleaseEvent(e);
 }
 
-void MainWindow::startTimer()
-{
-    endDate = QDateTime::currentDateTime().addSecs(timeLeft.second()
-                                                   + timeLeft.minute()*60
-                                                   + timeLeft.hour()*3600);
-    timer.start(83);
-    increment.start();
-    ui->timerBtn->setText("Stop countdown");
-}
-
-void MainWindow::stopTimer()
-{
-    timer.stop();
-    ui->lcdNumber->display("00:00:00.000");
-    ui->timerBtn->setText("Start countdown");
-}
-
 void MainWindow::toggleTimer()
 {
-    if (timer.isActive()) stopTimer();
-    else startTimer();
+    if (lcdNumber->isActive()) {
+        lcdNumber->stopTimer();
+        ui->timerBtn->setText("Start countdown");
+    } else {
+        lcdNumber->startTimer();
+        ui->timerBtn->setText("Stop countdown");
+    }
 }
