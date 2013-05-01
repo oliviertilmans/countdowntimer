@@ -47,11 +47,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::setTargetDuration()
 {
-    QTime timeLeft = ui->time->time();
-    QDateTime endDate = QDateTime::currentDateTime().addSecs(timeLeft.second()
-                                                   + timeLeft.minute()*60
-                                                   + timeLeft.hour()*3600);
-    lcdNumber->setTargetDateTime(endDate);
+    lcdNumber->scheduleLength(ui->time->time());
 }
 
 void MainWindow::goFS()

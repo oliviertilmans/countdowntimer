@@ -55,6 +55,15 @@ void CountdownWidget::setTargetDateTime(QDateTime d)
     refresh();
 }
 
+void CountdownWidget::scheduleLength(QTime t)
+{
+    QDateTime endDate = QDateTime::currentDateTime().addSecs(
+                                                   t.second()
+                                                   + t.minute()*60
+                                                   + t.hour()*3600);
+    setTargetDateTime(endDate);
+}
+
 void CountdownWidget::updateRefreshRate(int r)
 {
     refreshRate = r;
