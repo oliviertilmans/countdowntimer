@@ -91,10 +91,10 @@ void CountdownWidget::refresh()
     left = left/60;
     int m = left%60;
     int h = left/60;
-    // Compute the timestamp length
+    // Adapt the string length to its content (remove leading 0's before separators)
     if (h > 0) {
         // Compute the timestamp length
-        // separators + msec + s + m + h
+        // separators + msec + s + m + h with padding
         int length = 3 + 3 + 2 + 2 + qMax(h/10, 2);
         this->setDigitCount(length);
         this->display(QString("%1:%2:%3.%4")
@@ -103,6 +103,7 @@ void CountdownWidget::refresh()
                       .arg(QString::number(s),2,'0')
                       .arg(QString::number(ms),3,'0'));
     } else if (m > 0) {
+        // separators + msec + s + m without padding
         int length = 2 + 3 + 2 + (m/10 ? 2 : 1);
         this->setDigitCount(length);
         this->display(QString("%1:%2.%3")
@@ -110,6 +111,7 @@ void CountdownWidget::refresh()
                       .arg(QString::number(s),2,'0')
                       .arg(QString::number(ms),3,'0'));
     } else {
+        // separators + msec + s without padding
         int length = 1 + 3 + (s/10 ? 2 : 1);
         this->setDigitCount(length);
         this->display(QString("%1.%2")
