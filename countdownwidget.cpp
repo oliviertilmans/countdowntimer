@@ -97,7 +97,7 @@ void CountdownWidget::updateRefreshRate(int r)
 void CountdownWidget::refresh()
 {
     QDateTime now = QDateTime::currentDateTime();
-    if (now > endDate) {
+    if (now > endDate && timer.isActive()) {
         stopTimer();
         this->display("0.000");
         if (animatedEnd)  endTimer.start(BLINKDELAY);
